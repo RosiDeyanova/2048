@@ -18,7 +18,7 @@ namespace _2048
 
             spanwRandomNum();
             spanwRandomNum();
-        }
+        } //creates a blank table
         int randomNum(int range) {
             Random rnd = new Random();
             int n = rnd.Next(0, range);
@@ -29,10 +29,10 @@ namespace _2048
             Console.WriteLine();
             for (int i = 0; i < 4; i++)
             {
-                Console.Write('|');
+                Console.Write(' ');
                 for (int j = 0; j < 4; j++)
                 {
-                    Console.Write(table[i, j].ToString() + " | ");
+                    Console.Write(table[i, j].ToString() + "   ");
                 }
                 Console.WriteLine();
             }
@@ -67,15 +67,15 @@ namespace _2048
             if (isThereSpace == false) { Console.WriteLine("You lost."); }
             if (isThereWin == true || isThereSpace == false) { return true; } else { return false; }
 
-        }
+        } //checks if the player has won or lost
         void playerInput(char input)
         {
-            if (input == 'A'){ moveLeft(table,0); }
-            else if (input == 'D') { moveRight(table, 3); }
-            else if (input == 'W') { moveUp(table, 0); }
-            else if (input == 'S') { moveDown(table, 3); }
+            if (input == 'A'){ LEFT(table); }
+            else if (input == 'D') { RIGHT(table); }
+            else if (input == 'W') { UP(table); }
+            else if (input == 'S') { DOWN(table); }
             else { Console.WriteLine("Wrong controls"); }
-        }  //A-left D-right W-up S-down
+        }  //A-left D-right W-up S-down, receives the player input
         void spanwRandomNum() {
 
             int k, m;
@@ -88,191 +88,116 @@ namespace _2048
 
 
         } //spanws a 2 on a random place
-        void moveLeft(int[,] table, int _j)
-        {
-            int zeroCount=0;
-            for (int i = 0; i <4; i++)
-            {
-                while (true)
-                {
-                    if (table[i, _j] == 0) //recognizes a zero
-                    {
-                        zeroCount++;
-                        _j++;
-                    }
-                    else //recognizes a number 
-                    {
-                        if (zeroCount != 0) //moves a number over zeros
-                        {
-                            table[i, _j - 1 * zeroCount] = table[i, _j];
-                            table[i, _j] = 0;
-                            if (_j!=0 && zeroCount<_j && table[i, _j - (1 * zeroCount)] != table[i, _j - (1 * zeroCount) - 1])
-                            {
-                                _j++;
-                            }
-                            
 
-                        }
-                        if (_j - 1 * zeroCount != 0) // it sums the numbers if it needs to
+        void UP(int[,] table) 
+        {
+            
+            for (int i = 1; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    int k = i;
+                    while (k != 0)
+                    {
+                        if (table[k, j] == table[k - 1, j])
                         {
-                            if (table[i, _j - 1 * zeroCount] == table[i, _j - (1 * zeroCount) - 1])
-                            {
-                                table[i, _j - (1 * zeroCount) - 1] *= 2;
-                                table[i, _j - 1 * zeroCount] = 0;
-                            }
+                            table[k - 1, j] *= 2;
+                            table[k, j] = 0;
+                            break;
                         }
-                        else if((_j - 1 * zeroCount != 0)==false && (zeroCount != 0)==false)
-                        { _j++; } //regognizes a number, that doesn't need to be moved
+                        else if ((table[k, j] != table[k - 1, j]) && table[k - 1, j] == 0)
+                        {
+                            table[k - 1, j] = table[k, j];
+                            table[k, j] = 0;
+                        }
+                        k--;
                     }
-                  
                    
-                    if (_j>3){ _j = 0; zeroCount = 0; break;}
                 }
-                
             }
-            spanwRandomNum();
 
-        } 
-
-        void moveRight(int[,] table, int _j)
-        {
-            int zeroCount = 0;
-            for (int i = 3; i >=0; i--)
-            {
-                while (true)
-                {
-                    if (table[i, _j] == 0) //recognizes a zero
-                    {
-                        zeroCount++;
-                        _j--;
-                    }
-                    else //recognizes a number 
-                    {
-                        if (zeroCount != 0) //moves a number over zeros
-                        {
-                            table[i, _j +  zeroCount] = table[i, _j];
-                            table[i, _j] = 0;
-                            
-
-                        }
-                        if (_j + zeroCount != 3) // it sums the numbers if it needs to
-                        {
-                            if (_j == -1)
-                            {
-                                _j = 0;
-                            }
-                            if (table[i, _j + zeroCount + 1] == table[i, _j + zeroCount])
-                            {
-                                table[i, _j +  zeroCount+ 1] *= 2;
-                                table[i, _j + zeroCount] = 0;
-                            }
-                            _j--;
-                        }
-                        else if((_j + 1 * zeroCount != 3)==false && (zeroCount != 0)==false)
-                        { _j--; } //regognizes a number, that doesn't need to be moved
-                    }
-
-
-                    if (_j <0) { _j = 3; zeroCount = 0; break; }
-                }
-
-            }
             spanwRandomNum();
 
         }
-        void moveUp(int[,] table, int i)
+        void DOWN(int[,] table) 
         {
-            int zeroCount = 0;
-            for (int _j = 0; _j <4; _j++)
+            for (int i = 2; i >=0 ; i--)
             {
-                while (true)
+                for (int j = 0; j < 4; j++)
                 {
-                    if (table[i, _j] == 0) //recognizes a zero
+                    int k = i;
+                    while (k != 3)
                     {
-                        zeroCount++;
-                        i++;
-                    }
-                    else //recognizes a number 
-                    {
-                        if (zeroCount != 0) //moves a number over zeros
+                        if (table[k, j] == table[k + 1, j])
                         {
-                            table[i - 1 * zeroCount, _j] = table[i, _j];
-                            table[i, _j] = 0;
-                            if (i != 0 && zeroCount < i && table[i - (1 * zeroCount), _j] != table[i - (1 * zeroCount)-1, _j])
-                            {
-                                i++;
-                            }
-
-
+                            table[k + 1, j] *= 2;
+                            table[k, j] = 0;
+                            break;
                         }
-                        if (i - 1 * zeroCount != 0) // it sums the numbers if it needs to
+                        else if ((table[k, j] != table[k + 1, j]) && table[k + 1, j] == 0)
                         {
-                            if (table[i - 1 * zeroCount, _j] == table[i - (1 * zeroCount) - 1, _j])
-                            {
-                                table[i - (1 * zeroCount) - 1, _j] *= 2;
-                                table[i - 1 * zeroCount, _j] = 0;
-                            }
+                            table[k + 1, j] = table[k, j];
+                            table[k, j] = 0;
                         }
-                        else if ((i - 1 * zeroCount != 0) == false && (zeroCount != 0) == false)
-                        { i++; } //regognizes a number, that doesn't need to be moved
+                        k++;
                     }
-
-
-                    if (i > 3) { i = 0; zeroCount = 0; break; }
                 }
+               
 
             }
+
             spanwRandomNum();
 
         }
-        void moveDown(int[,] table, int i)
-        {
-            int zeroCount = 0;
-            for (int _j = 3; _j >= 0; _j--)
+        void RIGHT(int[,] table) {
+            for (int i = 0; i < 4; i++)
             {
-                while (true)
+                for (int j = 2; j >=0; j--)
                 {
-                    if (table[i, _j] == 0) //recognizes a zero
+                    int k = j;
+                    while (k != 3)
                     {
-                        zeroCount++;
-                        i--;
-                    }
-                    else //recognizes a number 
-                    {
-                        if (zeroCount != 0) //moves a number over zeros
+                        if (table[i, k] == table[i, k+1])
                         {
-                            table[i + 1 * zeroCount, _j] = table[i, _j];
-                            table[i, _j] = 0;
-                            if (i != 3 && zeroCount <= 3-i && table[i + (1 * zeroCount), _j] != table[i + (1 * zeroCount) - 1, _j])
-                            {
-                                i--;
-                            }
-
-
+                            table[i, k+1] *= 2;
+                            table[i,k] = 0;
+                            break;
                         }
-                        if (i + 1 * zeroCount != 3) // it sums the numbers if it needs to
+                        else if ((table[i,k] != table[i,k+1]) && table[i,k+1] == 0)
                         {
-                            if (i==-1)
-                            {
-                                i = 0;
-                            }
-                            if (table[i + 1 * zeroCount, _j] == table[i + (1 * zeroCount) + 1, _j])
-                            {
-                                table[i + (1 * zeroCount) + 1, _j] *= 2;
-                                table[i + 1 * zeroCount, _j] = 0;
-                            }
+                            table[i, k+1] = table[i,k];
+                            table[i,k] = 0;
                         }
-                        else if ((i + 1 * zeroCount != 3) == false && (zeroCount != 0) == false)
-                        { i--; } //regognizes a number, that doesn't need to be moved
+                        k++;
                     }
-
-
-                    if (i <0) { i = 3; zeroCount = 0; break; }
                 }
-
             }
             spanwRandomNum();
-
+        }
+        void LEFT(int[,] table) {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 1; j <=3; j++)
+                {
+                    int k = j;
+                    while (k != 0)
+                    {
+                        if (table[i, k] == table[i, k - 1])
+                        {
+                            table[i, k - 1] *= 2;
+                            table[i, k] = 0;
+                            break;
+                        }
+                        else if ((table[i, k] != table[i, k - 1]) && table[i, k - 1] == 0)
+                        {
+                            table[i, k - 1] = table[i, k];
+                            table[i, k] = 0;
+                        }
+                        k--;
+                    }
+                }
+            }
+            spanwRandomNum();
         }
 
         static void Main(string[] args)
@@ -282,7 +207,7 @@ namespace _2048
             p.drawTable();
            
 
-            while (p.isGameDone(p.table) != true)
+            while (p.isGameDone(p.table) != true) //while the player hasn't lost or won, the game is running
             {
                 p.playerInput(p.play());
                 p.drawTable();
